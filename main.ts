@@ -1,9 +1,8 @@
 function resources () {
     basic.showString("Resources")
-    if (!(checkInDone == 1)) {
+    basic.showString("Press B to go home")
+    while (!(input.buttonIsPressed(Button.B))) {
     	
-    } else {
-        basic.showString("b press")
     }
 }
 function jokesF () {
@@ -64,9 +63,10 @@ function bopIt () {
         }
     }
     basic.showIcon(IconNames.Angry)
+    serial.writeLine("WHATTTT")
 }
 function btTimer () {
-    basic.showString("Press B when you're ready!", 70)
+    basic.showString("Press B when ready!", 70)
 while (!(input.buttonIsPressed(Button.B))) {
     	
     }
@@ -77,9 +77,9 @@ startTimer = input.runningTime()
     while (timePassed < 120000) {
         timePassed = input.runningTime() - startTimer
         if (timePassed < 60000) {
-            basic.showString("1:" + ("" + (120 - Math.round(timePassed / 1000) - 60)))
+            basic.showString("1:" + ("" + ("" + ("" + (120 - Math.round(timePassed / 1000) - 60)))), 70)
         } else {
-            basic.showNumber(120 - Math.round(timePassed / 1000))
+            basic.showNumber(120 - Math.round(timePassed / 1000), 70)
         }
     }
     music.playTone(262, music.beat(BeatFraction.Whole))
@@ -159,34 +159,34 @@ startTimer = input.runningTime()
     serial.writeLine("Meditating...")
     while (timePassed < medTime) {
         timePassed = input.runningTime() - startTimer
-        basic.showNumber(Math.round((medTime - timePassed) / 1000))
+        basic.showNumber(Math.round((medTime - timePassed) / 1000), 70)
     }
     music.playTone(262, music.beat(BeatFraction.Whole))
-    basic.showString("Hope you feel calmer. Sending you to the menu...")
+    basic.showString("Hope you feel calmer. Sending you home...", 70)
 }
 function menuF () {
-    menuSel = 0
+    menuSelect = 0
     while (!(input.logoIsPressed())) {
-        if (input.buttonIsPressed(Button.B) && menuSel < 6) {
-            menuSel += 1
+        if (input.buttonIsPressed(Button.B) && menuSelect < 6) {
+            menuSelect += 1
         } else if (input.buttonIsPressed(Button.B)) {
-            menuSel = 0
-        } else if (input.buttonIsPressed(Button.A) && menuSel > 0) {
-            menuSel += -1
+            menuSelect = 0
+        } else if (input.buttonIsPressed(Button.A) && menuSelect > 0) {
+            menuSelect += -1
         } else if (input.buttonIsPressed(Button.A)) {
-            menuSel = 6
+            menuSelect = 6
         }
-        if (menuSel == 0) {
+        if (menuSelect == 0) {
             basic.showIcon(IconNames.Heart)
-        } else if (menuSel == 1) {
+        } else if (menuSelect == 1) {
             basic.showLeds(`
-                # # # # #
-                # . . . .
-                # . . # #
-                # . . . #
-                # # # # #
+                # # . . #
+                # . # . .
+                # # . . #
+                # . # . #
+                # # . . #
                 `)
-        } else if (menuSel == 2) {
+        } else if (menuSelect == 2) {
             basic.showLeds(`
                 . # # . .
                 . # # . .
@@ -194,7 +194,7 @@ function menuF () {
                 . . # . .
                 . . # . .
                 `)
-        } else if (menuSel == 3) {
+        } else if (menuSelect == 3) {
             basic.showLeds(`
                 . # # # .
                 . . . # .
@@ -202,7 +202,7 @@ function menuF () {
                 . . . . .
                 . . # . .
                 `)
-        } else if (menuSel == 4) {
+        } else if (menuSelect == 4) {
             basic.showLeds(`
                 # . . . #
                 # # . # #
@@ -210,7 +210,7 @@ function menuF () {
                 # . . . #
                 # . . . #
                 `)
-        } else if (menuSel == 5) {
+        } else if (menuSelect == 5) {
             basic.showLeds(`
                 . . . . .
                 . # . # .
@@ -218,7 +218,7 @@ function menuF () {
                 # # # # #
                 . # # # .
                 `)
-        } else if (menuSel == 6) {
+        } else if (menuSelect == 6) {
             basic.showLeds(`
                 . . . . #
                 . # . . .
@@ -228,45 +228,46 @@ function menuF () {
                 `)
         }
     }
-    if (menuSel == 0) {
+    if (menuSelect == 0) {
         checkIn()
-    } else if (menuSel == 1) {
+    } else if (menuSelect == 1) {
         bopIt()
-    } else if (menuSel == 2) {
+    } else if (menuSelect == 2) {
         btTimer()
-    } else if (menuSel == 3) {
+    } else if (menuSelect == 3) {
         resources()
-    } else if (menuSel == 4) {
+    } else if (menuSelect == 4) {
         meditate()
-    } else if (menuSel == 5) {
+    } else if (menuSelect == 5) {
         jokesF()
-    } else if (menuSel == 6) {
+    } else if (menuSelect == 6) {
         dodge()
     }
 }
 function checkIn () {
     checkInDone = 0
-    basic.showString("HRU")
-    while (!(checkInDone)) {
+    basic.showString("How are you?", 70)
+while (!(checkInDone)) {
         if (input.buttonIsPressed(Button.A)) {
-            basic.showString("grr")
-            checkInDone = 1
+            basic.showString("Great! Take a minute to reflect on why or what made you feel good! Click B to go home when you're done!", 70)
+checkInDone = 1
         } else if (input.buttonIsPressed(Button.B)) {
-            basic.showString("bro")
-            checkInDone = 1
+            basic.showString("Aww. It's 100% OK to feel bad during these times. Click the logo to see some mental health resources, click B to go home", 70)
+checkInDone = 1
             while (!(input.buttonIsPressed(Button.B))) {
                 if (input.logoIsPressed()) {
                     resources()
                 }
             }
         } else if (input.logoIsPressed()) {
-            basic.showString("bom")
-            checkInDone = 1
+            basic.showString("Well try to make your day better by doing something that makes you happy. Like spending time with your family or playing a game with me! Click B to go home.", 70)
+checkInDone = 1
         }
     }
     while (!(input.buttonIsPressed(Button.B))) {
     	
     }
+    checkInDone = 0
 }
 function startAnimation () {
     jokes = ["What did the grape say when he was pinched?    Nothing, he gave a little wine.", "Where do fruits go on vacation?    Pearis", "What did the man say when he walked into a bar?     Ouch!", "What do you call a pig that does karate?    A pork chop.", "Why can't you hear a pterodactyl in the bathroom?    Because it has a silent pee.", "What did the baby corn say to the mama corn?    Where is pop corn?", "I was looking for the lightning when it struck me.", "If you have 13 apples in one hand and 10 oranges in the other, what do you have?    Big hands."]
@@ -311,8 +312,8 @@ function startAnimation () {
         `)
     basic.pause(900)
 }
-let menuSel = 0
-let medTime = 0
+let checkInDone = 0
+let menuSelect = 0
 let medMinutes = 0
 let enemy3: game.LedSprite = null
 let enemy2: game.LedSprite = null
@@ -322,17 +323,16 @@ let delay = 0
 let enemyMoveTimer = 0
 let enemy1: game.LedSprite = null
 let player: game.LedSprite = null
-let timePassed = 0
 let startTimer = 0
 let bopItRand = 0
-let checkInDone = 0
 let buttonBDebounce = 0
 let buttonADebounce = 0
+let timePassed = 0
 let jokes : string[] = []
-startAnimation()
+let medTime = 0
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
 menuF()
 basic.forever(function () {
-	
+    menuF()
 })

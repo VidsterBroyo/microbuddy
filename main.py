@@ -1,9 +1,8 @@
 def resources():
     basic.show_string("Resources")
-    if not (checkInDone == 1):
+    basic.show_string("Press B to go home")
+    while not (input.button_is_pressed(Button.B)):
         pass
-    else:
-        basic.show_string("b press")
 def jokesF():
     basic.show_string("" + jokes[randint(0, 7)], 70)
     soundExpression.giggle.play()
@@ -47,9 +46,10 @@ def bopIt():
                 if input.is_gesture(Gesture.SHAKE):
                     break
     basic.show_icon(IconNames.ANGRY)
+    serial.write_line("WHATTTT")
 def btTimer():
     global startTimer, timePassed
-    basic.show_string("Press B when you're ready!", 70)
+    basic.show_string("Press B when ready!", 70)
     while not (input.button_is_pressed(Button.B)):
         pass
     basic.show_string("3 2 1")
@@ -59,13 +59,14 @@ def btTimer():
     while timePassed < 120000:
         timePassed = input.running_time() - startTimer
         if timePassed < 60000:
-            basic.show_string("1:" + ("" + str((120 - Math.round(timePassed / 1000) - 60))))
+            basic.show_string("1:" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60))))),
+                70)
         else:
-            basic.show_number(120 - Math.round(timePassed / 1000))
+            basic.show_number(120 - Math.round(timePassed / 1000), 70)
     music.play_tone(262, music.beat(BeatFraction.WHOLE))
     basic.show_string("Done! Good job!", 70)
 def dodge():
-    global player, enemy1, enemyMoveTimer, delay, enemies, gameOver, buttonADebounce, buttonBDebounce, enemy2
+    global player, enemy1, enemyMoveTimer, delay, enemies, gameOver, buttonADebounce, buttonBDebounce, enemy2, enemy3
     player = game.create_sprite(2, 4)
     enemy1 = game.create_sprite(0, 0)
     enemyMoveTimer = input.running_time()
@@ -91,17 +92,24 @@ def dodge():
             serial.write_line("button b")
             player.move(1)
             buttonBDebounce = control.millis()
-        if control.millis() - enemyMoveTimer > 1000:
+        if control.millis() - enemyMoveTimer > 750:
             enemy1.change(LedSpriteProperty.Y, 1)
-            if delay == 2:
+            if delay == 3:
                 enemy2 = game.create_sprite(2, 0)
                 enemies.append(enemy2)
-            elif delay > 2:
+            elif delay > 3 and delay < 5:
+                enemy2.change(LedSpriteProperty.Y, 1)
+            elif delay == 5:
+                enemy3 = game.create_sprite(4, 0)
+                enemies.append(enemy3)
+            elif delay > 5:
+                enemy3.change(LedSpriteProperty.Y, 1)
                 enemy2.change(LedSpriteProperty.Y, 1)
             enemyMoveTimer = input.running_time()
             delay += 1
     enemy1.delete()
     enemy2.delete()
+    enemy3.delete()
     player.delete()
     serial.write_line("saas")
     serial.write_string("whattt")
@@ -124,32 +132,32 @@ def meditate():
     serial.write_line("Meditating...")
     while timePassed < medTime:
         timePassed = input.running_time() - startTimer
-        basic.show_number(Math.round((medTime - timePassed) / 1000))
+        basic.show_number(Math.round((medTime - timePassed) / 1000), 70)
     music.play_tone(262, music.beat(BeatFraction.WHOLE))
-    basic.show_string("Hope you feel calmer. Sending you to the menu...")
+    basic.show_string("Hope you feel calmer. Sending you home...", 70)
 def menuF():
-    global menuSel
-    menuSel = 0
+    global menuSelect
+    menuSelect = 0
     while not (input.logo_is_pressed()):
-        if input.button_is_pressed(Button.B) and menuSel < 5:
-            menuSel += 1
+        if input.button_is_pressed(Button.B) and menuSelect < 6:
+            menuSelect += 1
         elif input.button_is_pressed(Button.B):
-            menuSel = 0
-        elif input.button_is_pressed(Button.A) and menuSel > 0:
-            menuSel += -1
+            menuSelect = 0
+        elif input.button_is_pressed(Button.A) and menuSelect > 0:
+            menuSelect += -1
         elif input.button_is_pressed(Button.A):
-            menuSel = 5
-        if menuSel == 0:
+            menuSelect = 6
+        if menuSelect == 0:
             basic.show_icon(IconNames.HEART)
-        elif menuSel == 1:
+        elif menuSelect == 1:
             basic.show_leds("""
-                # # # # #
-                # . . . .
-                # . . # #
-                # . . . #
-                # # # # #
+                # # . . #
+                # . # . .
+                # # . . #
+                # . # . #
+                # # . . #
                 """)
-        elif menuSel == 2:
+        elif menuSelect == 2:
             basic.show_leds("""
                 . # # . .
                 . # # . .
@@ -157,7 +165,7 @@ def menuF():
                 . . # . .
                 . . # . .
                 """)
-        elif menuSel == 3:
+        elif menuSelect == 3:
             basic.show_leds("""
                 . # # # .
                 . . . # .
@@ -165,7 +173,7 @@ def menuF():
                 . . . . .
                 . . # . .
                 """)
-        elif menuSel == 4:
+        elif menuSelect == 4:
             basic.show_leds("""
                 # . . . #
                 # # . # #
@@ -173,7 +181,7 @@ def menuF():
                 # . . . #
                 # . . . #
                 """)
-        elif menuSel == 5:
+        elif menuSelect == 5:
             basic.show_leds("""
                 . . . . .
                 . # . # .
@@ -181,38 +189,51 @@ def menuF():
                 # # # # #
                 . # # # .
                 """)
-    if menuSel == 0:
-        serial.write_line("WHATTTT")
+        elif menuSelect == 6:
+            basic.show_leds("""
+                . . . . #
+                . # . . .
+                . . . # .
+                . . . . .
+                . . # . .
+                """)
+    if menuSelect == 0:
         checkIn()
-    elif menuSel == 1:
+    elif menuSelect == 1:
         bopIt()
-    elif menuSel == 2:
+    elif menuSelect == 2:
         btTimer()
-    elif menuSel == 3:
+    elif menuSelect == 3:
         resources()
-    elif menuSel == 4:
+    elif menuSelect == 4:
         meditate()
-    elif menuSel == 5:
+    elif menuSelect == 5:
+        jokesF()
+    elif menuSelect == 6:
         dodge()
 def checkIn():
     global checkInDone
     checkInDone = 0
-    basic.show_string("HRU")
+    basic.show_string("How are you?", 70)
     while not (checkInDone):
         if input.button_is_pressed(Button.A):
-            basic.show_string("grr")
+            basic.show_string("Great! Take a minute to reflect on why or what made you feel good! Click B to go home when you're done!",
+                70)
             checkInDone = 1
         elif input.button_is_pressed(Button.B):
-            basic.show_string("bro")
+            basic.show_string("Aww. It's 100% OK to feel bad during these times. Click the logo to see some mental health resources, click B to go home",
+                70)
             checkInDone = 1
             while not (input.button_is_pressed(Button.B)):
                 if input.logo_is_pressed():
                     resources()
         elif input.logo_is_pressed():
-            basic.show_string("bom")
+            basic.show_string("Well try to make your day better by doing something that makes you happy. Like spending time with your family or playing a game with me! Click B to go home.",
+                70)
             checkInDone = 1
     while not (input.button_is_pressed(Button.B)):
         pass
+    checkInDone = 0
 def startAnimation():
     global jokes
     jokes = ["What did the grape say when he was pinched?    Nothing, he gave a little wine.",
@@ -223,6 +244,7 @@ def startAnimation():
         "What did the baby corn say to the mama corn?    Where is pop corn?",
         "I was looking for the lightning when it struck me.",
         "If you have 13 apples in one hand and 10 oranges in the other, what do you have?    Big hands."]
+    soundExpression.twinkle.play()
     game.set_score(0)
     game.add_score(1)
     basic.pause(1000)
@@ -262,9 +284,10 @@ def startAnimation():
         . # # # .
         """)
     basic.pause(900)
-menuSel = 0
-medTime = 0
+checkInDone = 0
+menuSelect = 0
 medMinutes = 0
+enemy3: game.LedSprite = None
 enemy2: game.LedSprite = None
 gameOver = 0
 enemies: List[game.LedSprite] = []
@@ -272,17 +295,17 @@ delay = 0
 enemyMoveTimer = 0
 enemy1: game.LedSprite = None
 player: game.LedSprite = None
-timePassed = 0
 startTimer = 0
 bopItRand = 0
-checkInDone = 0
 buttonBDebounce = 0
 buttonADebounce = 0
+timePassed = 0
 jokes: List[str] = []
+medTime = 0
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
 menuF()
 
 def on_forever():
-    pass
+    menuF()
 basic.forever(on_forever)
