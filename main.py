@@ -65,20 +65,20 @@ def btTimer():
     music.play_tone(262, music.beat(BeatFraction.WHOLE))
     basic.show_string("Done! Good job!", 70)
 def dodge():
-    global player, enemy1, enemyMoveTimer, delay, enemies, gameOver, buttonADebounce, buttonBDebounce, enemy3, enemy2
+    global player, enemy1, enemyMoveTimer, delay, enemies, gameOver, buttonADebounce, buttonBDebounce, enemy2
     player = game.create_sprite(2, 4)
     enemy1 = game.create_sprite(0, 0)
     enemyMoveTimer = input.running_time()
     delay = 0
     enemies = [enemy1]
     gameOver = 0
-    game.resume()
     while gameOver == 0:
         for value in enemies:
             if not (value.get(LedSpriteProperty.Y) > 3):
                 continue
-            elif value.is_touching(player):
+            elif enemy1.is_touching(player):
                 gameOver += 1
+                serial.write_line("bbtton bro")
             else:
                 basic.pause(100)
                 value.set(LedSpriteProperty.X, randint(0, 4))
@@ -93,31 +93,19 @@ def dodge():
             buttonBDebounce = control.millis()
         if control.millis() - enemyMoveTimer > 1000:
             enemy1.change(LedSpriteProperty.Y, 1)
+            if delay == 2:
+                enemy2 = game.create_sprite(2, 0)
+                enemies.append(enemy2)
+            elif delay > 2:
+                enemy2.change(LedSpriteProperty.Y, 1)
             enemyMoveTimer = input.running_time()
-        if delay > 6:
-            enemy2.change(LedSpriteProperty.Y, 1)
-            enemy3.change(LedSpriteProperty.Y, 1)
-            delay += 1
-        elif delay == 6:
-            enemy3 = game.create_sprite(4, 0)
-            enemies.append(enemy3)
-            enemy2.change(LedSpriteProperty.Y, 1)
-            delay += 1
-        elif delay > 3:
-            enemy2.change(LedSpriteProperty.Y, 1)
-            delay += 1
-        elif delay == 3:
-            enemy2 = game.create_sprite(2, 0)
-            enemies.append(enemy2)
-            delay += 1
-        else:
             delay += 1
     enemy1.delete()
     enemy2.delete()
     player.delete()
-    game.pause()
     serial.write_line("saas")
     serial.write_string("whattt")
+    game.pause()
 def meditate():
     global medMinutes, timePassed, medTime, startTimer
     basic.show_string("How many minutes?", 70)
@@ -194,6 +182,7 @@ def menuF():
                 . # # # .
                 """)
     if menuSel == 0:
+        serial.write_line("WHATTTT")
         checkIn()
     elif menuSel == 1:
         bopIt()
@@ -276,7 +265,6 @@ def startAnimation():
 menuSel = 0
 medTime = 0
 medMinutes = 0
-enemy3: game.LedSprite = None
 enemy2: game.LedSprite = None
 gameOver = 0
 enemies: List[game.LedSprite] = []
@@ -291,11 +279,10 @@ checkInDone = 0
 buttonBDebounce = 0
 buttonADebounce = 0
 jokes: List[str] = []
-startAnimation()
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
 menuF()
 
 def on_forever():
-    menuF()
+    pass
 basic.forever(on_forever)
