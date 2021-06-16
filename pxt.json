@@ -1,0 +1,24 @@
+{
+    "name": "micro:buddy",
+    "description": "",
+    "dependencies": {
+        "core": "*",
+        "radio": "*",
+        "microphone": "*",
+        "pxt-kitronik-viewtext32": "github:kitronikltd/pxt-kitronik-viewtext32#v1.0.4",
+        "DS1307": "github:makecode-extensions/ds1307#v1.2.0"
+    },
+    "files": [
+        "main.blocks",
+        "main.ts",
+        "README.md",
+        "main.py"
+    ],
+    "testFiles": [
+        "test.ts"
+    ],
+    "supportedTargets": [
+        "microbit"
+    ],
+    "preferredEditor": "blocksprj"
+}
