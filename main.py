@@ -1,6 +1,7 @@
 def resources():
-    basic.show_string("Resources")
-    basic.show_string("Press B to go home")
+    basic.show_string("Some resources include 'dcontario.org', 'kidshelpphone.ca', and 'mindyourmind.ca'. You can also try researching other mental health resources on the Internet as there are countless others!",
+        70)
+    basic.show_string("Press B to go home", 70)
     while not (input.button_is_pressed(Button.B)):
         pass
 def jokesF():
@@ -14,8 +15,10 @@ def jokesF():
             menuF()
 def bopIt():
     global bopItRand
+    basic.show_string("Guide: West=Button A, East=Button B, S=Tilt down, N=Tilt up, SE=Tilt Right, Shake to end game",
+        70)
     while not (input.is_gesture(Gesture.SHAKE)):
-        bopItRand = randint(0, 5)
+        bopItRand = randint(0, 4)
         if bopItRand == 0:
             basic.show_arrow(ArrowNames.WEST)
             while not (input.button_is_pressed(Button.A)):
@@ -37,17 +40,11 @@ def bopIt():
                 if input.is_gesture(Gesture.SHAKE):
                     break
         elif bopItRand == 4:
-            basic.show_arrow(ArrowNames.NORTH_WEST)
-            while not (input.is_gesture(Gesture.TILT_LEFT)):
-                if input.is_gesture(Gesture.SHAKE):
-                    break
-        elif bopItRand == 5:
             basic.show_arrow(ArrowNames.SOUTH_EAST)
             while not (input.is_gesture(Gesture.TILT_RIGHT)):
                 if input.is_gesture(Gesture.SHAKE):
                     break
-    basic.show_icon(IconNames.ANGRY)
-    serial.write_line("WHATTTT")
+    basic.show_string("Game Ended. Sending you home...", 70)
 def btTimer():
     global startTimer, timePassed
     basic.show_string("Press B when ready!", 70)
@@ -60,7 +57,7 @@ def btTimer():
     while timePassed < 120000:
         timePassed = input.running_time() - startTimer
         if timePassed < 60000:
-            basic.show_string("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60)))))))))),
+            basic.show_string("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60))))))))))))))),
                 70)
         else:
             basic.show_number(120 - Math.round(timePassed / 1000), 70)
@@ -78,6 +75,7 @@ def dodge():
     enemyMoveTimer = input.running_time()
     delay = 0
     gameOver = 0
+    basic.show_string("Use A & B to move the player", 70)
     game.resume()
     enemy1.set(LedSpriteProperty.BRIGHTNESS, 150)
     while gameOver == 0:
@@ -114,11 +112,13 @@ def dodge():
             enemyMoveTimer = input.running_time()
             delay += 1
     enemy1.delete()
+    enemy2.delete()
+    enemy3.delete()
     player.delete()
     game.pause()
 def meditate():
     global medTime, timePassed, startTimer
-    basic.show_string("How many minutes?", 70)
+    basic.show_string("How many minutes? A to -1, B to +1, Logo to continue", 70)
     medTime = 0
     while not (input.logo_is_pressed()):
         if input.button_is_pressed(Button.B):
@@ -215,7 +215,7 @@ def menuF():
 def checkIn():
     global checkInDone
     checkInDone = 0
-    basic.show_string("How are you?", 70)
+    basic.show_string("How are you? A=Good, Logo=Meh, B=Bad", 70)
     while not (checkInDone):
         if input.button_is_pressed(Button.A):
             basic.show_string("Great! Take a minute to reflect on why or what made you feel good! Click B to go home when you're done!",
@@ -236,6 +236,20 @@ def checkIn():
         pass
     checkInDone = 0
 def startAnimation():
+    global jokes
+    jokes = ["What did the grape say when he was pinched?    Nothing, he gave a little wine!",
+        "Where do fruits go on vacation?    Pearis",
+        "What did the man say when he walked into a bar?     Ouch!",
+        "What do you call a pig that does karate?    A pork chop!",
+        "Why can't you hear a pterodactyl in the bathroom?    Because it has a silent pee!",
+        "What did the baby corn say to the mama corn?    Where is pop corn?",
+        "I was looking for the lightning when it struck me.",
+        "If you have 13 apples in one hand and 10 oranges in the other, what do you have?    Big hands!",
+        "What did the duck say when he bought lipstick?    Put it on my bill!",
+        "What do you call a boomerang that won't come back?    A stick!",
+        "What do computers eat for a snack?    Microchips",
+        "What happens to a frog's car when it breaks down?    It gets toad away.",
+        "What' the difference between ignorance and apathy?    I don't know, and I don't care"]
     soundExpression.twinkle.play()
     game.set_score(0)
     game.add_score(1)
@@ -290,10 +304,12 @@ startTimer = 0
 bopItRand = 0
 buttonBDebounce = 0
 buttonADebounce = 0
-startAnimation()
-jokes: List[str] = []
-medTime = 0
 timePassed = 0
+medTime = 0
+jokes: List[str] = []
+startAnimation()
+basic.show_string("Use A & B to go through the menu, hold the logo to select",
+    70)
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
 menuF()

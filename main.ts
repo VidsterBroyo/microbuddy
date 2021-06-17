@@ -1,7 +1,7 @@
 function resources () {
-    basic.showString("Resources")
-    basic.showString("Press B to go home")
-    while (!(input.buttonIsPressed(Button.B))) {
+    basic.showString("Some resources include 'dcontario.org', 'kidshelpphone.ca', and 'mindyourmind.ca'. You can also try researching other mental health resources on the Internet as there are countless others!", 70)
+basic.showString("Press B to go home", 70)
+while (!(input.buttonIsPressed(Button.B))) {
     	
     }
 }
@@ -18,8 +18,9 @@ while (!(input.buttonIsPressed(Button.A) || input.buttonIsPressed(Button.B))) {
     }
 }
 function bopIt () {
-    while (!(input.isGesture(Gesture.Shake))) {
-        bopItRand = randint(0, 5)
+    basic.showString("Guide: West=Button A, East=Button B, S=Tilt down, N=Tilt up, SE=Tilt Right, Shake to end game", 70)
+while (!(input.isGesture(Gesture.Shake))) {
+        bopItRand = randint(0, 4)
         if (bopItRand == 0) {
             basic.showArrow(ArrowNames.West)
             while (!(input.buttonIsPressed(Button.A))) {
@@ -49,13 +50,6 @@ function bopIt () {
                 }
             }
         } else if (bopItRand == 4) {
-            basic.showArrow(ArrowNames.NorthWest)
-            while (!(input.isGesture(Gesture.TiltLeft))) {
-                if (input.isGesture(Gesture.Shake)) {
-                    break;
-                }
-            }
-        } else if (bopItRand == 5) {
             basic.showArrow(ArrowNames.SouthEast)
             while (!(input.isGesture(Gesture.TiltRight))) {
                 if (input.isGesture(Gesture.Shake)) {
@@ -64,8 +58,7 @@ function bopIt () {
             }
         }
     }
-    basic.showIcon(IconNames.Angry)
-    serial.writeLine("WHATTTT")
+    basic.showString("Game Ended. Sending you home...", 70)
 }
 function btTimer () {
     basic.showString("Press B when ready!", 70)
@@ -79,7 +72,7 @@ startTimer = input.runningTime()
     while (timePassed < 120000) {
         timePassed = input.runningTime() - startTimer
         if (timePassed < 60000) {
-            basic.showString("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + (120 - Math.round(timePassed / 1000) - 60))))))))), 70)
+            basic.showString("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + (120 - Math.round(timePassed / 1000) - 60)))))))))))))), 70)
         } else {
             basic.showNumber(120 - Math.round(timePassed / 1000), 70)
         }
@@ -92,13 +85,16 @@ function dodge () {
     enemy1 = game.createSprite(0, 0)
     enemy2 = game.createSprite(2, 0)
     enemy3 = game.createSprite(4, 0)
+    enemy4 = game.createSprite(1, 0)
     enemy2.set(LedSpriteProperty.Brightness, 0)
     enemy3.set(LedSpriteProperty.Brightness, 0)
+    enemy4.set(LedSpriteProperty.Brightness, 0)
     enemies = [enemy1]
     enemyMoveTimer = input.runningTime()
     delay = 0
     gameOver = 0
-    game.resume()
+    basic.showString("Use A & B to move the player", 70)
+game.resume()
     enemy1.set(LedSpriteProperty.Brightness, 150)
     while (gameOver == 0) {
         for (let value of enemies) {
@@ -131,9 +127,16 @@ function dodge () {
             } else if (delay == 5) {
                 enemy3.set(LedSpriteProperty.Brightness, 150)
                 enemies.push(enemy3)
-            } else if (delay > 5) {
+            } else if (delay > 5 && delay < 7) {
                 enemy3.change(LedSpriteProperty.Y, 1)
                 enemy2.change(LedSpriteProperty.Y, 1)
+            } else if (delay == 7) {
+                enemy4.set(LedSpriteProperty.Brightness, 150)
+                enemies.push(enemy4)
+            } else if (delay > 7) {
+                enemy2.change(LedSpriteProperty.Y, 1)
+                enemy3.change(LedSpriteProperty.Y, 1)
+                enemy4.change(LedSpriteProperty.Y, 1)
             }
             enemyMoveTimer = input.runningTime()
             delay += 1
@@ -142,11 +145,12 @@ function dodge () {
     enemy1.delete()
     enemy2.delete()
     enemy3.delete()
+    enemy4.delete()
     player.delete()
     game.pause()
 }
 function meditate () {
-    basic.showString("How many minutes?", 70)
+    basic.showString("How many minutes? A to -1, B to +1, Logo to continue", 70)
 medTime = 0
     while (!(input.logoIsPressed())) {
         if (input.buttonIsPressed(Button.B)) {
@@ -250,7 +254,7 @@ function menuF () {
 }
 function checkIn () {
     checkInDone = 0
-    basic.showString("How are you?", 70)
+    basic.showString("How are you? A=Good, Logo=Meh, B=Bad", 70)
 while (!(checkInDone)) {
         if (input.buttonIsPressed(Button.A)) {
             basic.showString("Great! Take a minute to reflect on why or what made you feel good! Click B to go home when you're done!", 70)
@@ -322,6 +326,7 @@ let gameOver = 0
 let delay = 0
 let enemyMoveTimer = 0
 let enemies: game.LedSprite[] = []
+let enemy4: game.LedSprite = null
 let enemy3: game.LedSprite = null
 let enemy2: game.LedSprite = null
 let enemy1: game.LedSprite = null
@@ -330,10 +335,11 @@ let startTimer = 0
 let bopItRand = 0
 let buttonBDebounce = 0
 let buttonADebounce = 0
-let jokes : string[] = []
-let medTime = 0
 let timePassed = 0
+let medTime = 0
+let jokes : string[] = []
 startAnimation()
+basic.showString("Use A & B to go through the menu, hold the logo to select", 70)
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
 menuF()
