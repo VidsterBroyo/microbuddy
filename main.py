@@ -67,14 +67,19 @@ def btTimer():
     music.play_tone(262, music.beat(BeatFraction.WHOLE))
     basic.show_string("Done! Good job!", 70)
 def dodge():
-    global player, enemy1, enemies, enemyMoveTimer, delay, gameOver, buttonADebounce, buttonBDebounce, enemy2, enemy3
+    global player, enemy1, enemy2, enemy3, enemies, enemyMoveTimer, delay, gameOver, buttonADebounce, buttonBDebounce
     player = game.create_sprite(2, 4)
     enemy1 = game.create_sprite(0, 0)
+    enemy2 = game.create_sprite(2, 0)
+    enemy3 = game.create_sprite(4, 0)
+    enemy2.set(LedSpriteProperty.BRIGHTNESS, 0)
+    enemy3.set(LedSpriteProperty.BRIGHTNESS, 0)
     enemies = [enemy1]
     enemyMoveTimer = input.running_time()
     delay = 0
     gameOver = 0
     game.resume()
+    enemy1.set(LedSpriteProperty.BRIGHTNESS, 150)
     while gameOver == 0:
         for value in enemies:
             if not (value.get(LedSpriteProperty.Y) > 3):
@@ -96,12 +101,12 @@ def dodge():
         if control.millis() - enemyMoveTimer > 750:
             enemy1.change(LedSpriteProperty.Y, 1)
             if delay == 3:
-                enemy2 = game.create_sprite(2, 0)
+                enemy2.set(LedSpriteProperty.BRIGHTNESS, 150)
                 enemies.append(enemy2)
             elif delay > 3 and delay < 5:
                 enemy2.change(LedSpriteProperty.Y, 1)
             elif delay == 5:
-                enemy3 = game.create_sprite(4, 0)
+                enemy3.set(LedSpriteProperty.BRIGHTNESS, 150)
                 enemies.append(enemy3)
             elif delay > 5:
                 enemy3.change(LedSpriteProperty.Y, 1)
@@ -273,36 +278,24 @@ def startAnimation():
     basic.pause(900)
 checkInDone = 0
 menuSelect = 0
-enemy3: game.LedSprite = None
-enemy2: game.LedSprite = None
 gameOver = 0
 delay = 0
 enemyMoveTimer = 0
 enemies: List[game.LedSprite] = []
+enemy3: game.LedSprite = None
+enemy2: game.LedSprite = None
 enemy1: game.LedSprite = None
 player: game.LedSprite = None
 startTimer = 0
 bopItRand = 0
 buttonBDebounce = 0
 buttonADebounce = 0
+startAnimation()
 jokes: List[str] = []
 medTime = 0
 timePassed = 0
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
-jokes = ["What did the grape say when he was pinched?    Nothing, he gave a little wine!",
-    "Where do fruits go on vacation?    Pearis",
-    "What did the man say when he walked into a bar?     Ouch!",
-    "What do you call a pig that does karate?    A pork chop!",
-    "Why can't you hear a pterodactyl in the bathroom?    Because it has a silent pee!",
-    "What did the baby corn say to the mama corn?    Where is pop corn?",
-    "I was looking for the lightning when it struck me.",
-    "If you have 13 apples in one hand and 10 oranges in the other, what do you have?    Big hands!",
-    "What did the duck say when he bought lipstick?    Put it on my bill!",
-    "What do you call a boomerang that won't come back?    A stick!",
-    "What do computers eat for a snack?    Microchips",
-    "What happens to a frog's car when it breaks down?    It gets toad away.",
-    "What' the difference between ignorance and apathy?    I don't know, and I don't care"]
 menuF()
 
 def on_forever():
