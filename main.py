@@ -4,13 +4,14 @@ def resources():
     while not (input.button_is_pressed(Button.B)):
         pass
 def jokesF():
-    basic.show_string("" + jokes[randint(0, 7)], 70)
+    basic.show_string("" + jokes[randint(0, 12)], 80)
     soundExpression.giggle.play()
-    basic.show_string("Haha! Press A to hear another one, B to go home")
-    if input.button_is_pressed(Button.A):
-        jokesF()
-    elif input.button_is_pressed(Button.B):
-        menuF()
+    basic.show_string("Haha! Press A to hear another one, B to go home", 70)
+    while not (input.button_is_pressed(Button.A) or input.button_is_pressed(Button.B)):
+        if input.button_is_pressed(Button.A):
+            jokesF()
+        elif input.button_is_pressed(Button.B):
+            menuF()
 def bopIt():
     global bopItRand
     while not (input.is_gesture(Gesture.SHAKE)):
@@ -59,27 +60,27 @@ def btTimer():
     while timePassed < 120000:
         timePassed = input.running_time() - startTimer
         if timePassed < 60000:
-            basic.show_string("1:" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60))))),
+            basic.show_string("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60)))))))))),
                 70)
         else:
             basic.show_number(120 - Math.round(timePassed / 1000), 70)
     music.play_tone(262, music.beat(BeatFraction.WHOLE))
     basic.show_string("Done! Good job!", 70)
 def dodge():
-    global player, enemy1, enemyMoveTimer, delay, enemies, gameOver, buttonADebounce, buttonBDebounce, enemy2, enemy3
+    global player, enemy1, enemies, enemyMoveTimer, delay, gameOver, buttonADebounce, buttonBDebounce, enemy2, enemy3
     player = game.create_sprite(2, 4)
     enemy1 = game.create_sprite(0, 0)
+    enemies = [enemy1]
     enemyMoveTimer = input.running_time()
     delay = 0
-    enemies = [enemy1]
     gameOver = 0
+    game.resume()
     while gameOver == 0:
         for value in enemies:
             if not (value.get(LedSpriteProperty.Y) > 3):
                 continue
-            elif enemy1.is_touching(player):
+            elif value.is_touching(player):
                 gameOver += 1
-                serial.write_line("bbtton bro")
             else:
                 basic.pause(100)
                 value.set(LedSpriteProperty.X, randint(0, 4))
@@ -108,32 +109,27 @@ def dodge():
             enemyMoveTimer = input.running_time()
             delay += 1
     enemy1.delete()
-    enemy2.delete()
-    enemy3.delete()
     player.delete()
-    serial.write_line("saas")
-    serial.write_string("whattt")
     game.pause()
 def meditate():
-    global medMinutes, timePassed, medTime, startTimer
+    global medTime, timePassed, startTimer
     basic.show_string("How many minutes?", 70)
-    medMinutes = 0
-    basic.show_number(timePassed)
+    medTime = 0
     while not (input.logo_is_pressed()):
         if input.button_is_pressed(Button.B):
-            medMinutes += 1
+            medTime += 1
         elif input.button_is_pressed(Button.A):
-            medMinutes += -1
-        basic.show_number(medMinutes)
+            medTime += -1
+        basic.show_number(medTime)
     timePassed = 0
-    medTime = medMinutes * 60000
+    medTime = medTime * 60000
     basic.show_string("Focus on taking deep breaths in and out... ", 70)
     startTimer = input.running_time()
     serial.write_line("Meditating...")
     while timePassed < medTime:
         timePassed = input.running_time() - startTimer
         basic.show_number(Math.round((medTime - timePassed) / 1000), 70)
-    music.play_tone(262, music.beat(BeatFraction.WHOLE))
+    music.play_tone(262, music.beat(BeatFraction.DOUBLE))
     basic.show_string("Hope you feel calmer. Sending you home...", 70)
 def menuF():
     global menuSelect
@@ -235,15 +231,6 @@ def checkIn():
         pass
     checkInDone = 0
 def startAnimation():
-    global jokes
-    jokes = ["What did the grape say when he was pinched?    Nothing, he gave a little wine.",
-        "Where do fruits go on vacation?    Pearis",
-        "What did the man say when he walked into a bar?     Ouch!",
-        "What do you call a pig that does karate?    A pork chop.",
-        "Why can't you hear a pterodactyl in the bathroom?    Because it has a silent pee.",
-        "What did the baby corn say to the mama corn?    Where is pop corn?",
-        "I was looking for the lightning when it struck me.",
-        "If you have 13 apples in one hand and 10 oranges in the other, what do you have?    Big hands."]
     soundExpression.twinkle.play()
     game.set_score(0)
     game.add_score(1)
@@ -286,24 +273,36 @@ def startAnimation():
     basic.pause(900)
 checkInDone = 0
 menuSelect = 0
-medMinutes = 0
 enemy3: game.LedSprite = None
 enemy2: game.LedSprite = None
 gameOver = 0
-enemies: List[game.LedSprite] = []
 delay = 0
 enemyMoveTimer = 0
+enemies: List[game.LedSprite] = []
 enemy1: game.LedSprite = None
 player: game.LedSprite = None
 startTimer = 0
 bopItRand = 0
 buttonBDebounce = 0
 buttonADebounce = 0
-timePassed = 0
 jokes: List[str] = []
 medTime = 0
+timePassed = 0
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
+jokes = ["What did the grape say when he was pinched?    Nothing, he gave a little wine!",
+    "Where do fruits go on vacation?    Pearis",
+    "What did the man say when he walked into a bar?     Ouch!",
+    "What do you call a pig that does karate?    A pork chop!",
+    "Why can't you hear a pterodactyl in the bathroom?    Because it has a silent pee!",
+    "What did the baby corn say to the mama corn?    Where is pop corn?",
+    "I was looking for the lightning when it struck me.",
+    "If you have 13 apples in one hand and 10 oranges in the other, what do you have?    Big hands!",
+    "What did the duck say when he bought lipstick?    Put it on my bill!",
+    "What do you call a boomerang that won't come back?    A stick!",
+    "What do computers eat for a snack?    Microchips",
+    "What happens to a frog's car when it breaks down?    It gets toad away.",
+    "What' the difference between ignorance and apathy?    I don't know, and I don't care"]
 menuF()
 
 def on_forever():
