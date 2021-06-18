@@ -1,24 +1,35 @@
+# Resources function
 def resources():
+    # Display resources
     basic.show_string("Some resources include 'dcontario.org', 'kidshelpphone.ca', and 'mindyourmind.ca'. You can also try researching other mental health resources on the Internet as there are countless others!",
         70)
     basic.show_string("Press B to go home", 70)
+    # Wait for user input
     while not (input.button_is_pressed(Button.B)):
         pass
+# Function that tells jokes
 def jokesF():
     basic.show_string("" + jokes[randint(0, 12)], 80)
     soundExpression.giggle.play()
     basic.show_string("Haha! Press A to hear another one, B to go home", 70)
+    # Wait for user input
     while not (input.button_is_pressed(Button.A) or input.button_is_pressed(Button.B)):
+        # Button A = Another joke
+        # Button B = Menu
         if input.button_is_pressed(Button.A):
             jokesF()
         elif input.button_is_pressed(Button.B):
             menuF()
+# Bop-It type game
 def bopIt():
     global bopItRand
-    basic.show_string("Guide: West=Button A, East=Button B, S=Tilt down, N=Tilt up, SE=Tilt Right, Shake to end game",
+    basic.show_string(" Guide: West=Button A, East=Button B, S=Tilt down, N=Tilt up, SE=Tilt Right, Shake to end game",
         70)
+    # Shaking the Micro:bit will end the game, while it's not being shaken, keep playing the game
     while not (input.is_gesture(Gesture.SHAKE)):
+        # Pick a random number that will represent the arrow
         bopItRand = randint(0, 4)
+        # Based on the randomly generated number, display the correct arrow and wait for the user to do the correct gesture
         if bopItRand == 0:
             basic.show_arrow(ArrowNames.WEST)
             while not (input.button_is_pressed(Button.A)):
@@ -45,32 +56,40 @@ def bopIt():
                 if input.is_gesture(Gesture.SHAKE):
                     break
     basic.show_string("Game Ended. Sending you home...", 70)
+# Toothbrush timer function
 def btTimer():
     global startTimer, timePassed
-    basic.show_string("Press B when ready!", 70)
+    basic.show_string(" Press B when ready!", 70)
+    # Wait for button B to be pressed
     while not (input.button_is_pressed(Button.B)):
         pass
     basic.show_string("3 2 1")
     basic.show_string("Brush!", 70)
+    # Logs what time the timer started
     startTimer = input.running_time()
     timePassed = 0
+    # Keep displaying time until the timer is done
     while timePassed < 120000:
+        # Get difference between time started and current time to get time passed
         timePassed = input.running_time() - startTimer
+        # If less than a minute has passed, display time using minutes instead of seconds. Ex. instead of displaying 110, the Micro:bit displays 1:50
         if timePassed < 60000:
-            basic.show_string("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60))))))))))))))),
+            basic.show_string("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60)))))))))))))))))),
                 70)
         else:
             basic.show_number(120 - Math.round(timePassed / 1000), 70)
     music.play_tone(262, music.beat(BeatFraction.WHOLE))
     basic.show_string("Done! Good job!", 70)
 def dodge():
-    global player, enemy1, enemy2, enemy3, enemies, enemyMoveTimer, delay, gameOver, buttonADebounce, buttonBDebounce
+    global player, enemy1, enemy2, enemy3, enemy4, enemies, enemyMoveTimer, delay, gameOver, buttonADebounce, buttonBDebounce
     player = game.create_sprite(2, 4)
     enemy1 = game.create_sprite(0, 0)
     enemy2 = game.create_sprite(2, 0)
     enemy3 = game.create_sprite(4, 0)
+    enemy4 = game.create_sprite(1, 0)
     enemy2.set(LedSpriteProperty.BRIGHTNESS, 0)
     enemy3.set(LedSpriteProperty.BRIGHTNESS, 0)
+    enemy4.set(LedSpriteProperty.BRIGHTNESS, 0)
     enemies = [enemy1]
     enemyMoveTimer = input.running_time()
     delay = 0
@@ -106,14 +125,22 @@ def dodge():
             elif delay == 5:
                 enemy3.set(LedSpriteProperty.BRIGHTNESS, 150)
                 enemies.append(enemy3)
-            elif delay > 5:
+            elif delay > 5 and delay < 7:
                 enemy3.change(LedSpriteProperty.Y, 1)
                 enemy2.change(LedSpriteProperty.Y, 1)
+            elif delay == 7:
+                enemy4.set(LedSpriteProperty.BRIGHTNESS, 150)
+                enemies.append(enemy4)
+            elif delay > 7:
+                enemy2.change(LedSpriteProperty.Y, 1)
+                enemy3.change(LedSpriteProperty.Y, 1)
+                enemy4.change(LedSpriteProperty.Y, 1)
             enemyMoveTimer = input.running_time()
             delay += 1
     enemy1.delete()
     enemy2.delete()
     enemy3.delete()
+    enemy4.delete()
     player.delete()
     game.pause()
 def meditate():
@@ -136,10 +163,14 @@ def meditate():
         basic.show_number(Math.round((medTime - timePassed) / 1000), 70)
     music.play_tone(262, music.beat(BeatFraction.DOUBLE))
     basic.show_string("Hope you feel calmer. Sending you home...", 70)
+# The menu function
 def menuF():
     global menuSelect
+    # This variable that keeps track of what option is currently selected
     menuSelect = 0
+    # Continuously updates menuSelect and display until the logo is selected
     while not (input.logo_is_pressed()):
+        # If button B is pressed, it goes to the next option. Unless menuSelect is already at the highest, in which case it goes back to 0. The same goes for the button A but goes to the last option instead..
         if input.button_is_pressed(Button.B) and menuSelect < 6:
             menuSelect += 1
         elif input.button_is_pressed(Button.B):
@@ -148,6 +179,7 @@ def menuF():
             menuSelect += -1
         elif input.button_is_pressed(Button.A):
             menuSelect = 6
+        # Display updates as the option selected changes
         if menuSelect == 0:
             basic.show_icon(IconNames.HEART)
         elif menuSelect == 1:
@@ -198,6 +230,7 @@ def menuF():
                 . . . . .
                 . . # . .
                 """)
+    # Once Logo is pressed, get the option selected and run the corresponding function
     if menuSelect == 0:
         checkIn()
     elif menuSelect == 1:
@@ -212,11 +245,15 @@ def menuF():
         jokesF()
     elif menuSelect == 6:
         dodge()
+# check-in function
 def checkIn():
     global checkInDone
+    # variable that keeps track of whether or not the check-in is done
     checkInDone = 0
     basic.show_string("How are you? A=Good, Logo=Meh, B=Bad", 70)
+    # While the check-in isn't done...
     while not (checkInDone):
+        # Display different text depending on how they feel
         if input.button_is_pressed(Button.A):
             basic.show_string("Great! Take a minute to reflect on why or what made you feel good! Click B to go home when you're done!",
                 70)
@@ -225,6 +262,7 @@ def checkIn():
             basic.show_string("Aww. It's 100% OK to feel bad during these times. Click the logo to see some mental health resources, click B to go home",
                 70)
             checkInDone = 1
+            # If they feel bad, they can press the logo to see mental health resources. They can also press B to go straight home
             while not (input.button_is_pressed(Button.B)):
                 if input.logo_is_pressed():
                     resources()
@@ -232,9 +270,11 @@ def checkIn():
             basic.show_string("Well try to make your day better by doing something that makes you happy. Like spending time with your family or playing a game with me! Click B to go home.",
                 70)
             checkInDone = 1
+    # Wait for user input to go home
     while not (input.button_is_pressed(Button.B)):
         pass
     checkInDone = 0
+# A little animation that plays when the Micro:bit starts
 def startAnimation():
     global jokes
     jokes = ["What did the grape say when he was pinched?    Nothing, he gave a little wine!",
@@ -296,6 +336,7 @@ gameOver = 0
 delay = 0
 enemyMoveTimer = 0
 enemies: List[game.LedSprite] = []
+enemy4: game.LedSprite = None
 enemy3: game.LedSprite = None
 enemy2: game.LedSprite = None
 enemy1: game.LedSprite = None
@@ -304,9 +345,9 @@ startTimer = 0
 bopItRand = 0
 buttonBDebounce = 0
 buttonADebounce = 0
-timePassed = 0
-medTime = 0
 jokes: List[str] = []
+medTime = 0
+timePassed = 0
 startAnimation()
 basic.show_string("Use A & B to go through the menu, hold the logo to select",
     70)
