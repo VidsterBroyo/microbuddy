@@ -132,7 +132,6 @@ function dodge () {
                 // End the game if an enemy is touching the player
                 gameOver += 1
             } else {
-                // 
                 basic.pause(100)
                 // Reset the enemy to a new location at the top of the screen if it reaches the bottom
                 value.set(LedSpriteProperty.X, randint(0, 4))
@@ -147,7 +146,7 @@ function dodge () {
             player.move(1)
             buttonBDebounce = control.millis()
         }
-        // Every 750 milliseconds, the enemies move down. The variable "delay" is also increased by 1. 
+        // Every 750 milliseconds, the enemies move down. The variable "delay" is also increased by 1. When delay gets to 3, the 2nd enemy spawns. When it gets to 5,the 3rd one is spawned. When it gets to 7, the 4th and last one spawns. 
         if (control.millis() - enemyMoveTimer > 750) {
             enemy1.change(LedSpriteProperty.Y, 1)
             if (delay == 3) {
