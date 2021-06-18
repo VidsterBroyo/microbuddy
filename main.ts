@@ -147,6 +147,7 @@ function dodge () {
             player.move(1)
             buttonBDebounce = control.millis()
         }
+        // Every 750 milliseconds, the enemies move down. The variable "delay" is also increased by 1. 
         if (control.millis() - enemyMoveTimer > 750) {
             enemy1.change(LedSpriteProperty.Y, 1)
             if (delay == 3) {
