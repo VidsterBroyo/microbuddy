@@ -1,7 +1,6 @@
 # Resources function
 def resources():
-    # Display resources
-    basic.show_string("Some resources include 'dcontario.org', 'kidshelpphone.ca', and 'mindyourmind.ca'. You can also try researching other mental health resources on the Internet as there are countless others!",
+    basic.show_string(" Some mental health resources include 'dcontario.org', 'kidshelpphone.ca', and 'mindyourmind.ca'. You can also try researching other mental health resources on the Internet as there are countless others!",
         70)
     basic.show_string("Press B to go home", 70)
     # Wait for user input
@@ -74,47 +73,61 @@ def btTimer():
         timePassed = input.running_time() - startTimer
         # If less than a minute has passed, display time using minutes instead of seconds. Ex. instead of displaying 110, the Micro:bit displays 1:50
         if timePassed < 60000:
-            basic.show_string("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60)))))))))))))))))),
+            basic.show_string("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + str((120 - Math.round(timePassed / 1000) - 60))))))))))))))))))),
                 70)
         else:
             basic.show_number(120 - Math.round(timePassed / 1000), 70)
     music.play_tone(262, music.beat(BeatFraction.WHOLE))
     basic.show_string("Done! Good job!", 70)
+# Dodge game function
 def dodge():
     global player, enemy1, enemy2, enemy3, enemy4, enemies, enemyMoveTimer, delay, gameOver, buttonADebounce, buttonBDebounce
+    # Create the 5 sprites. 4 enemies, 1 player
     player = game.create_sprite(2, 4)
     enemy1 = game.create_sprite(0, 0)
     enemy2 = game.create_sprite(2, 0)
     enemy3 = game.create_sprite(4, 0)
     enemy4 = game.create_sprite(1, 0)
+    # Set first enemy's brightness to 150 so there's a difference between the enemy and the player
+    enemy1.set(LedSpriteProperty.BRIGHTNESS, 150)
+    # Make three of the enemies invisible at the start since they're not supposed to be there at the beginning
     enemy2.set(LedSpriteProperty.BRIGHTNESS, 0)
     enemy3.set(LedSpriteProperty.BRIGHTNESS, 0)
     enemy4.set(LedSpriteProperty.BRIGHTNESS, 0)
+    # Array of enemies
     enemies = [enemy1]
+    # Start timer for enemies to move
     enemyMoveTimer = input.running_time()
+    # This variable is used to delay when the rest of the enemies spawn to make it trickier
     delay = 0
+    # Variable to tell if the game is over or not
     gameOver = 0
-    basic.show_string("Use A & B to move the player", 70)
+    basic.show_string(" Use A & B to move the player", 70)
+    # Resume the game after it's been paused once it's finished
     game.resume()
-    enemy1.set(LedSpriteProperty.BRIGHTNESS, 150)
+    # While the game isn't over
     while gameOver == 0:
+        # Check every enemy in the list
         for value in enemies:
+            # Check if the enemy isn't at the bottom of the screen, if it's touching the player, or at the bottom but not touching the player
             if not (value.get(LedSpriteProperty.Y) > 3):
                 continue
             elif value.is_touching(player):
+                # End the game if an enemy is touching the player
                 gameOver += 1
             else:
                 basic.pause(100)
+                # Reset the enemy to a new location at the top of the screen if it reaches the bottom
                 value.set(LedSpriteProperty.X, randint(0, 4))
                 value.set(LedSpriteProperty.Y, 0)
+        # Move the player right or left based on which button is pressed. There is a debounce timer for the buttons to ensure the player doesn't move too fast.
         if input.button_is_pressed(Button.A) and control.millis() - buttonADebounce > 250:
-            serial.write_line("button a")
             player.move(-1)
             buttonADebounce = control.millis()
         elif input.button_is_pressed(Button.B) and control.millis() - buttonBDebounce > 250:
-            serial.write_line("button b")
             player.move(1)
             buttonBDebounce = control.millis()
+        # Every 750 milliseconds, the enemies move down. The variable "delay" is also increased by 1. When delay gets to 3, the 2nd enemy spawns. When it gets to 5,the 3rd one is spawned. When it gets to 7, the 4th and last one spawns. 
         if control.millis() - enemyMoveTimer > 750:
             enemy1.change(LedSpriteProperty.Y, 1)
             if delay == 3:
@@ -137,15 +150,17 @@ def dodge():
                 enemy4.change(LedSpriteProperty.Y, 1)
             enemyMoveTimer = input.running_time()
             delay += 1
+    # Delete all sprites
     enemy1.delete()
     enemy2.delete()
     enemy3.delete()
     enemy4.delete()
     player.delete()
+    # Pause the game. If I don't do this, the game will continue trying to render the game despite no sprites being present. 
     game.pause()
 def meditate():
     global medTime, timePassed, startTimer
-    basic.show_string("How many minutes? A to -1, B to +1, Logo to continue", 70)
+    basic.show_string(" How many minutes? A to -1, B to +1, Logo to continue", 70)
     medTime = 0
     while not (input.logo_is_pressed()):
         if input.button_is_pressed(Button.B):
@@ -155,14 +170,13 @@ def meditate():
         basic.show_number(medTime)
     timePassed = 0
     medTime = medTime * 60000
-    basic.show_string("Focus on taking deep breaths in and out... ", 70)
+    basic.show_string(" Focus on taking deep breaths in and out... ", 70)
     startTimer = input.running_time()
-    serial.write_line("Meditating...")
     while timePassed < medTime:
         timePassed = input.running_time() - startTimer
         basic.show_number(Math.round((medTime - timePassed) / 1000), 70)
     music.play_tone(262, music.beat(BeatFraction.DOUBLE))
-    basic.show_string("Hope you feel calmer. Sending you home...", 70)
+    basic.show_string(" Hope you feel calmer. Sending you home...", 70)
 # The menu function
 def menuF():
     global menuSelect
@@ -250,7 +264,7 @@ def checkIn():
     global checkInDone
     # variable that keeps track of whether or not the check-in is done
     checkInDone = 0
-    basic.show_string("How are you? A=Good, Logo=Meh, B=Bad", 70)
+    basic.show_string(" How are you? A=Good, Logo=Meh, B=Bad", 70)
     # While the check-in isn't done...
     while not (checkInDone):
         # Display different text depending on how they feel
@@ -345,9 +359,9 @@ startTimer = 0
 bopItRand = 0
 buttonBDebounce = 0
 buttonADebounce = 0
-jokes: List[str] = []
-medTime = 0
 timePassed = 0
+medTime = 0
+jokes: List[str] = []
 startAnimation()
 basic.show_string("Use A & B to go through the menu, hold the logo to select",
     70)

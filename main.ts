@@ -1,6 +1,6 @@
 // Resources function
 function resources () {
-    basic.showString("Some resources include 'dcontario.org', 'kidshelpphone.ca', and 'mindyourmind.ca'. You can also try researching other mental health resources on the Internet as there are countless others!", 70)
+    basic.showString(" Some mental health resources include 'dcontario.org', 'kidshelpphone.ca', and 'mindyourmind.ca'. You can also try researching other mental health resources on the Internet as there are countless others!", 70)
 basic.showString("Press B to go home", 70)
 // Wait for user input
     while (!(input.buttonIsPressed(Button.B))) {
@@ -88,12 +88,12 @@ function btTimer () {
         timePassed = input.runningTime() - startTimer
         // If less than a minute has passed, display time using minutes instead of seconds. Ex. instead of displaying 110, the Micro:bit displays 1:50
         if (timePassed < 60000) {
-            basic.showString("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + (120 - Math.round(timePassed / 1000) - 60)))))))))))))))))), 70)
+            basic.showString("1:" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + ("" + (120 - Math.round(timePassed / 1000) - 60))))))))))))))))))), 70)
         } else {
             basic.showNumber(120 - Math.round(timePassed / 1000), 70)
         }
     }
-    music.playTone(262, music.beat(BeatFraction.Whole))
+    music.playTone(262, music.beat(BeatFraction.Double))
     basic.showString("Done! Good job!", 70)
 }
 // Dodge game function
@@ -118,7 +118,7 @@ function dodge () {
     delay = 0
     // Variable to tell if the game is over or not
     gameOver = 0
-    basic.showString("Use A & B to move the player", 70)
+    basic.showString(" Use A & B to move the player", 70)
 // Resume the game after it's been paused once it's finished
     game.resume()
     // While the game isn't over
@@ -146,7 +146,7 @@ function dodge () {
             player.move(1)
             buttonBDebounce = control.millis()
         }
-        // Every 750 milliseconds, the enemies move down. The variable "delay" is also increased by 1. When delay gets to 3, the 2nd enemy spawns. When it gets to 5,the 3rd one is spawned. When it gets to 7, the 4th and last one spawns. 
+        // Every 750 milliseconds, the enemies move down. The variable "delay" is also increased by 1. When delay gets to 3, the 2nd enemy spawns. When it gets to 5,the 3rd one is spawned. When it gets to 7, the 4th and last one spawns.
         if (control.millis() - enemyMoveTimer > 750) {
             enemy1.change(LedSpriteProperty.Y, 1)
             if (delay == 3) {
@@ -178,11 +178,11 @@ function dodge () {
     enemy3.delete()
     enemy4.delete()
     player.delete()
-    // Pause the game. If I don't do this, the game will continue trying to render the game despite no sprites being present. 
+    // Pause the game. If I don't do this, the game will continue trying to render the game despite no sprites being present.
     game.pause()
 }
 function meditate () {
-    basic.showString("How many minutes? A to -1, B to +1, Logo to continue", 70)
+    basic.showString(" How many minutes? A to -1, B to +1, Logo to continue", 70)
 medTime = 0
     while (!(input.logoIsPressed())) {
         if (input.buttonIsPressed(Button.B)) {
@@ -194,15 +194,14 @@ medTime = 0
     }
     timePassed = 0
     medTime = medTime * 60000
-    basic.showString("Focus on taking deep breaths in and out... ", 70)
+    basic.showString(" Focus on taking deep breaths in and out... ", 70)
 startTimer = input.runningTime()
-    serial.writeLine("Meditating...")
     while (timePassed < medTime) {
         timePassed = input.runningTime() - startTimer
         basic.showNumber(Math.round((medTime - timePassed) / 1000), 70)
     }
     music.playTone(262, music.beat(BeatFraction.Double))
-    basic.showString("Hope you feel calmer. Sending you home...", 70)
+    basic.showString(" Hope you feel calmer. Sending you home...", 70)
 }
 // The menu function
 function menuF () {
@@ -294,7 +293,7 @@ function menuF () {
 function checkIn () {
     // variable that keeps track of whether or not the check-in is done
     checkInDone = 0
-    basic.showString("How are you? A=Good, Logo=Meh, B=Bad", 70)
+    basic.showString(" How are you? A=Good, Logo=Meh, B=Bad", 70)
 // While the check-in isn't done...
     while (!(checkInDone)) {
         // Display different text depending on how they feel
@@ -380,14 +379,15 @@ let startTimer = 0
 let bopItRand = 0
 let buttonBDebounce = 0
 let buttonADebounce = 0
-let timePassed = 0
-let medTime = 0
 let jokes : string[] = []
+let medTime = 0
+let timePassed = 0
 startAnimation()
 basic.showString("Use A & B to go through the menu, hold the logo to select", 70)
 buttonADebounce = control.millis()
 buttonBDebounce = control.millis()
 menuF()
+// The menu function is always called so, when a function ends, it's automatically called
 basic.forever(function () {
     menuF()
 })
